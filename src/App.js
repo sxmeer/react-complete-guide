@@ -37,6 +37,16 @@ const App = () => {
       </div>
     );
 }
+// there are basically two types of ways to create compontents which are functional components
+// which uses react hooks to maintain their states from 16.8 and second one is 
+//class based components
+
+//there are two types of components stateful and stateless component
+//one where business logic and computations are done and states are changed
+//and are propagated to child components are called stateful
+// there should be more stateless component and less stateful component
+//as it might be the case that all the components are doing something leading to less reusability
+// and spaghetti code
 
 export default App;
 
