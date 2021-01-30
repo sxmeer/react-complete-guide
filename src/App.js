@@ -3,49 +3,110 @@ import './App.css';
 import './Person/Person'
 import Person from './Person/Person';
 
-class App extends Component{
+class App extends Component {
 
   state = {
     Person: [
-      {id: 1, name: "Steven", age: 23},
-      {id: 2, name: "John", age: 234},
-      {id: 3, name: "Daniel", age: 21} 
-    ]
+      { id: 1, name: "Steven", age: 23 },
+      { id: 2, name: "John", age: 234 },
+      { id: 3, name: "Daniel", age: 21 }
+    ],
+    isPersonListVisible: true
   }
   switchNameHandler = (newName) => {
     this.setState({
-      Person:[{name: newName.toString(), age: 23},
-      {name: "John", age: 234},
-      {name: "Daniel", age: 36} ]
+      Person: [{ name: newName.toString(), age: 23 },
+      { name: "John", age: 234 },
+      { name: "Daniel", age: 36 }]
     })
   }
 
-  onChangeHandler = (event) =>{
+  onNameChangeHandler = (event, personId) => {
+    const personIndex = this.state.Person.findIndex(p => p.id === personId);
+    const changedPerson = {
+      ...this.state.Person[personIndex]
+    }
+    changedPerson.name = event.target.value;
+
+    const allPersons = [
+      ...this.state.Person
+    ]
+    allPersons[personIndex] = changedPerson;
     this.setState({
-      Person:[{name: event.target.value, age: 23},
-      {name: "John", age: 234},
-      {name: "Daniel", age: 36} ]
+      Person: allPersons
+    });
+
+  }
+
+  onChangeHandler = (event) => {
+    this.setState({
+      Person: [{ name: event.target.value, age: 23 },
+      { name: "John", age: 234 },
+      { name: "Daniel", age: 36 }]
     })
   }
 
-    render(){
-      const inlineStyle = {
-        backgroundColor: 'white',
-        border: '2px solid blue'
-      } 
+  onDeleteHandler = (index) => {
+    let persons = [...this.state.Person];
+    persons.splice(index, 1);
+    this.setState({
+      Person: persons
+    })
+  }
+
+
+  togglePersonHandler = () => {
+    let lastState = this.state.isPersonListVisible;
+    this.setState({
+      isPersonListVisible: !lastState
+    });
+  }
+
+  render() {
+    const inlineStyle = {
+      backgroundColor: 'white',
+      border: '2px solid blue',
+      padding: '16px',
+      borderRadius: '5px',
+      cursor: 'pointer'
+    }
+    const visibility = {
+      display: 'none'
+    }
+
+    let personElement = null;
+    if (this.state.isPersonListVisible) {
+      personElement = (
+        <div>
+          {this.state.Person.map((person, index) => {
+            return <Person name={person.name}
+              age={person.age}
+              key={person.id}
+              change={(event) => this.onNameChangeHandler(event, person.id)}
+              delete={this.onDeleteHandler.bind(this, index)} />
+          })}
+        </div>
+      )
+    }
+
     return (
       <div className="App">
         <h1>This is my new Project</h1>
-        <button style={inlineStyle} /*onClick={()=>this.switchNameHandler('Mac'.toString())}*/
-        onClick = {this.switchNameHandler.bind(this,'Maxi')}
-         on>SwitchName</button>
-        <Person name={this.state.Person[0].name} age={this.state.Person[0].age} change={this.onChangeHandler}>Signatue Dialogue: I am gonna kill you Voldy</Person>
-        <Person name={this.state.Person[1].name} age={this.state.Person[1].age} change={this.onChangeHandler}>I don't have a life, I am just a placeholder</Person>
-        <Person name={this.state.Person[2].name} age={this.state.Person[2].age} change={this.onChangeHandler}>I don't know If I am cricketer or just a name being used in
-        brad's course</Person>
+        <button style={{ ...inlineStyle, ...visibility }}
+          /*onClick={()=>this.switchNameHandler('Mac'.toString())}*/
+          onClick={this.switchNameHandler.bind(this, 'Maxi')}
+          on>SwitchName</button>
+
+        <button
+          /*onClick={()=>this.switchNameHandler('Mac'.toString())}*/
+          onClick={this.togglePersonHandler}
+          on>{this.state.isPersonListVisible ? 'Hide Person List' : 'Show Person List'}</button>
+        {personElement}
+
+
       </div>
     );
-    }
+  }
 }
 
 export default App;
