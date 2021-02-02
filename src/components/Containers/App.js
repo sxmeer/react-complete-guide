@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import './Person/Person'
-import Person from './Person/Person';
+import '../Persons/Person/Person'
+import Persons from '../Persons/Persons';
+import Cockpit from '../Cockpit/Cockpit';
 
 class App extends Component {
-
   state = {
     Person: [
       { id: 1, name: "Steven", age: 23 },
@@ -38,13 +38,13 @@ class App extends Component {
 
   }
 
-  onChangeHandler = (event) => {
-    this.setState({
-      Person: [{ name: event.target.value, age: 23 },
-      { name: "John", age: 234 },
-      { name: "Daniel", age: 36 }]
-    })
-  }
+  // onChangeHandler = (event) => {
+  //   this.setState({
+  //     Person: [{ name: event.target.value, age: 23 },
+  //     { name: "John", age: 234 },
+  //     { name: "Daniel", age: 36 }]
+  //   })
+  // }
 
   onDeleteHandler = (index) => {
     let persons = [...this.state.Person];
@@ -63,47 +63,21 @@ class App extends Component {
   }
 
   render() {
-    const inlineStyle = {
-      backgroundColor: 'white',
-      border: '2px solid blue',
-      padding: '16px',
-      borderRadius: '5px',
-      cursor: 'pointer'
-    }
-    const visibility = {
-      display: 'none'
-    }
-
     let personElement = null;
     if (this.state.isPersonListVisible) {
       personElement = (
-        <div>
-          {this.state.Person.map((person, index) => {
-            return <Person name={person.name}
-              age={person.age}
-              key={person.id}
-              change={(event) => this.onNameChangeHandler(event, person.id)}
-              delete={this.onDeleteHandler.bind(this, index)} />
-          })}
-        </div>
-      )
+        <Persons Person={this.state.Person}
+          change={this.onNameChangeHandler}
+          delete={this.onDeleteHandler} />
+      );
     }
 
     return (
       <div className="App">
-        <h1>This is my new Project</h1>
-        <button style={{ ...inlineStyle, ...visibility }}
-          /*onClick={()=>this.switchNameHandler('Mac'.toString())}*/
-          onClick={this.switchNameHandler.bind(this, 'Maxi')}
-          on>SwitchName</button>
-
-        <button
-          /*onClick={()=>this.switchNameHandler('Mac'.toString())}*/
-          onClick={this.togglePersonHandler}
-          on>{this.state.isPersonListVisible ? 'Hide Person List' : 'Show Person List'}</button>
+        <Cockpit isPersonListVisible={this.state.isPersonListVisible}
+          togglePersonHandler={this.togglePersonHandler}
+          switchNameHandler={this.switchNameHandler} />
         {personElement}
-
-
       </div>
     );
   }
